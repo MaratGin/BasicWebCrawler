@@ -15,10 +15,15 @@ path = "saved1"
 nltk.download('punkt')
 nltk.download('stopwords')
 stop_words = stopwords.words('russian')
-stop_words.extend(['это', 'чтò','всё', 'те', 'Б', 'W', 'У','0','О','у', 'sports', 'sportsru', 'ufc', 'букмекер', 'й', "фг", "●"])
+stop_words.extend(['это', 'чтò','всё', 'те', 'Б', 'W', 'У','0','О','у',
+                   'sports', 'sportsru', 'ufc', 'букмекер', 'й', "фг",
+                   "●" , ",", " ,", "р", "х","б","клубкоторый", "плачутжалуютсяскулятноют",
+                   "вальеканореал", "пр", "гн","са"])
 stop_words = set(stopwords.words())
 bad_words = ['букмекер','ставк','легал','глав','й']
-spec_chars = string.punctuation + '«»—…-’©🤓😁🫨⚽💃🎭😂🤣🏆👑–❤✨👍🧐□🚨👏'
+spec_chars = string.punctuation + ('«»—…-’©,”●≈つ🤓😁🫨⚽💃🎭😂🤔🤣🏆👀'
+                                   '👑–❤✨👌👍🧐□🎅🚨👏🤗🇦🇷❓₽№🤩༼🔥🍺🤝'
+                                   '😍😄🤯🤔❓🇧🇷🤔❌🙄💊🅰️💣📹🏻💔🔗😅')
 nltk.download('omw-1.4')
 text_pages = []
 
@@ -37,7 +42,8 @@ def tokenization(started_text):
         # проверяем, что токен не содержит английских символов
         if re.search('[a-zA-Z]+', token) is None:
             # добавляем его в новый массив
-            filtered_tokens.append(token.lower())
+            if len(token) > 2:
+                filtered_tokens.append(token.lower())
 
     filtered_tokens = [word.strip() for word in filtered_tokens if word not in stop_words]
     return filtered_tokens
