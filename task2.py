@@ -17,10 +17,9 @@ nltk.download('stopwords')
 stop_words = stopwords.words('russian')
 stop_words.extend(['это', 'чтò','всё', 'те', 'Б', 'W', 'У','0','О','у',
                    'sports', 'sportsru', 'ufc', 'букмекер', 'й', "фг",
-                   "●" , ",", " ,", "р", "х","б","клубкоторый", "плачутжалуютсяскулятноют",
-                   "вальеканореал", "пр", "гн","са"])
+                   "●" , ",", " ,", "р", "х","б", "пр", "гн","са"])
+bad_formatted_words = ['Вальекано', 'плачутжалуютсяскулятныть', 'плачутжалуютсяскулятноют', 'клубкоторый']
 stop_words = set(stopwords.words())
-bad_words = ['букмекер','ставк','легал','глав','й']
 spec_chars = string.punctuation + ('«»—…-’©,”●≈つ🤓😁🫨⚽💃🎭😂🤔🤣🏆👀'
                                    '👑–❤✨👌👍🧐□🎅🚨👏🤗🇦🇷❓₽№🤩༼🔥🍺🤝'
                                    '😍😄🤯🤔❓🇧🇷🤔❌🙄💊🅰️💣📹🏻💔🔗😅')
@@ -32,10 +31,17 @@ def tokenization(started_text):
     text = "".join([ch for ch in started_text if ch not in spec_chars])
     # убираем числа
     text = "".join([ch for ch in text if ch not in string.digits])
+
+
     # получаем токены
     tokens = word_tokenize(text)
     # убираем стоп-слова
     tokens = [word.strip() for word in tokens if word not in stop_words]
+
+    tokens = [word for word in tokens if all(sub not in word for sub in bad_formatted_words)]
+
+
+
 
     filtered_tokens = []
     for token in tokens:
