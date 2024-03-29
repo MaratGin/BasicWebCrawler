@@ -148,16 +148,38 @@ def vector_search(vector, links, tf_idf):
             result.append(links[str(page_number + 1)])
     return result
 
+def vector_search(vector, links, tf_idf):
+    distances = dict()
+    index = 0
+    for page in tf_idf:
+        dist = 1 - distance.cosine(vector, page)
+        # print(dist)
+        if dist > 0 and dist != 1:
+            distances[index] = dist
+        index += 1
+    sorted_array = sorted(distances.items(), key=lambda item: item[1], reverse=True)
+
+    result = []
+    result_index = []
+    for page_number, score in sorted_array:
+        print("page number- " + str(page_number + 1) + " score= " + str(score))
+        if str(page_number + 1) in links:
+            result.append(links[str(page_number + 1)])
+            result_index.append(page_number + 1)
+    return result, result_index
+
 if __name__ == "__main__":
     links = get_links()
     lemmas = get_lemmas()
     tokens = get_tokens()
     tf_idf = get_tf_idf(lemmas)
-    value = "скорость"
-    vector = vectorize(value, lemmas)
-    result = vector_search(vector, links, tf_idf)
-    if len(result) == 0:
-        print("Нет подходящих страниц")
-    else:
-        print("Результаты поиска:")
-        print(result)
+    while True:
+        value = input("Введите запрос ")
+        vector = vectorize(value, lemmas)
+        result,indexes = vector_search(vector, links, tf_idf)
+        if len(result) == 0:
+            print("Нет подходящих страниц")
+        else:
+            print("Результаты поиска:")
+            for i in range(len(result)):
+                print("Номер страницы- " +str(indexes[i]) + " Ссылка " +str(result[i]))
